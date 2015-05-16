@@ -1,3 +1,5 @@
+[ ![Codeship Status for JoshBarr/nz-flag-api](https://codeship.com/projects/4a698e60-7754-0132-4dc3-26527322a871/status?branch=master)](https://codeship.com/projects/55433)
+
 # NZ Flag Consideration Project API
 
 Lots of people have been asking for a way to get the NZ Govt Flags out of the
