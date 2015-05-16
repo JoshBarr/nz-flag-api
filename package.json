@@ -6,11 +6,11 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"No tests, but maybe one day!\" && exit 0",
-    "scrape": "python ./flag/scrape.py scrape",
-    "start": "python ./flag/app.py",
-    "dump": "python ./flag/scrape.py dump > var/submissions.json",
-    "migrate": "python ./flag/scrape.py migrate var/submissions.json",
-    "drop": "python ./flag/scrape.py drop",
+    "scrape": "python scraper scrape",
+    "start": "python api",
+    "dump": "python scraper dump > var/submissions.json",
+    "migrate": "python scraper migrate var/submissions.json",
+    "drop": "python scraper drop",
     "cron": "node cron.js",
     "postinstall": "pip install -r requirements.txt",
     "quickstart": "npm run scrape & npm start"

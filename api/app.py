@@ -6,13 +6,32 @@ from flask import Flask, request, url_for, render_template, abort, redirect
 from sqlalchemy.orm import sessionmaker, scoped_session
 from flask.ext.jsontools import JsonSerializableBase, DynamicJSONEncoder, jsonapi
 
-from models import Base, session, engine, Submission, ApiJSONEncoder
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, DateTime
+from flask.ext.jsontools import JsonSerializableBase, DynamicJSONEncoder
+import sqlalchemy as sql
+
+
 from urlparse import urlparse
-from config import PORT
 
 app = Flask(__name__)
-app.json_encoder = ApiJSONEncoder
 app.config.from_object('config')
+app.config.from_object('env')
+
+
+from sqlalchemy.orm import sessionmaker, scoped_session
+
+Base = declarative_base(cls=(JsonSerializableBase,))
+
+engine = sql.create_engine(app.config['DATABASE'], echo=False)
+session = scoped_session(sessionmaker(bind=engine,
+                        autocommit=False,
+                        autoflush=False))
+
+from models import Submission, ApiJSONEncoder
+
+app.json_encoder = ApiJSONEncoder
+Base.metadata.create_all(engine)
 
 
 # Get the URL for the static assets
@@ -52,6 +71,5 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(port=PORT)
-
+    app.run(debug=True, port=5000)
 

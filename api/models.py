@@ -5,15 +5,7 @@ import sqlalchemy as sql
 import arrow
 import datetime
 
-from sqlalchemy.orm import sessionmaker, scoped_session
-
-Base = declarative_base(cls=(JsonSerializableBase,))
-
-engine = sql.create_engine('sqlite:///var/submissions.sqlite', echo=False)
-session = scoped_session(sessionmaker(bind=engine,
-                        autocommit=False,
-                        autoflush=False))
-
+import app as application
 
 class ApiJSONEncoder(DynamicJSONEncoder):
     def default(self, o):
@@ -28,7 +20,7 @@ class ApiJSONEncoder(DynamicJSONEncoder):
         return super(DynamicJSONEncoder, self).default(o)
 
 
-class Submission(Base):
+class Submission(application.Base):
     __tablename__ = 'submissions'
     id = Column(Integer, primary_key=True)
     title = Column(String)
@@ -45,3 +37,5 @@ class Submission(Base):
     def __repr__(self):
         return "<Submission(id='%s', designer='%s', title='%s')>" % (
                             self.id, self.designer.encode('utf-8'), self.title.encode('utf-8'))
+
+

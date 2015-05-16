@@ -14,9 +14,10 @@ import sys
 import os
 import arrow
 
-from models import session, engine, Submission, Base, ApiJSONEncoder
+# Add the parent dir to the path, which is I think what Flask is doing anyway
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from api.app import session, engine, Submission, Base, ApiJSONEncoder
 from config import BASE_URL, BASE_PATH, STATIC_PATH, IMAGE_PATH
-
 
 def get_submissions_per_page(soup):
     submissions = soup.findAll('div', {'class': 'flag'})
@@ -82,7 +83,7 @@ def build_urls(submissions_per_page, max_offset):
     return urls
 
 
-def get_submissions(session):
+def get_submissions():
     submissions_per_page, max_offset, total = get_search_criteria_from_index_page()
     urls = build_urls(submissions_per_page, max_offset)
     scrape_start_time = datetime.datetime.now()
@@ -130,14 +131,14 @@ def get_submissions(session):
 
             # The item description and some location data is stored on the
             # detail view for each item. So we traverse all those URLs as well.
-            get_extended_metadata(session, instance)
+            get_extended_metadata(instance)
             session.merge(instance)
             session.commit()
 
     scrape_end_time = datetime.datetime.now()
 
 
-def get_extended_metadata(session, item):
+def get_extended_metadata(item):
     soup = get_url_as_soup(item.url)
     description_node = soup.find('p', {'class': 'flag-story'})
     designer_node = soup.find('p', {'class': 'designed-by'})
@@ -155,13 +156,13 @@ def get_extended_metadata(session, item):
     item.designer_location = designer_location
 
 
-def dump_to_json(session):
+def dump_to_json():
     items = session.query(Submission).all()
     json_models = [x.__json__() for x in items]
     print json.dumps(json_models, indent=4, sort_keys=True, separators=(',', ': '), cls=ApiJSONEncoder, ensure_ascii=False).encode('utf-8')
 
 
-def migrate_from_json(session, path):
+def migrate_from_json(path):
     with open(path, 'r') as infile:
         submissions = json.load(infile)
 
@@ -176,7 +177,7 @@ def migrate_from_json(session, path):
 
 
 def save_image(id, img):
-    d = os.path.dirname(os.path.join(STATIC_PATH, IMAGE_PATH))
+    d = os.path.join(STATIC_PATH, IMAGE_PATH)
 
     if not os.path.exists(d):
         os.makedirs(d)
@@ -188,45 +189,6 @@ def save_image(id, img):
     return os.path.join(IMAGE_PATH, filename)
 
 
-def cli_help():
-    print "CLI options:"
-    print "\scrape\t\tScrape the live site and generate a DB"
-    print "\tmigrate [PATH] Pulls in a json file and migrates it into the DB"
-    print "\tdump > [PATH] \t\tDumps the DB as JSON to stout. Redirect it to your file."
-    print "\tdrop\t\tDrops the database tables and rebuilds them"
-    exit()
-
-
-def main():
-    data = {}
-
-    if len(sys.argv) < 2:
-        cli_help()
-
-    if sys.argv[1] == 'dump':
-        dump_to_json(session)
-
-    elif sys.argv[1] == 'migrate':
-        if not sys.argv[2]:
-            print "Please specify a json file to read in."
-            exit()
-        if not os.path.exists(sys.argv[2]):
-            print "Make sure the path exists"
-            exit()
-
-        Base.metadata.create_all(engine)
-        migrate_from_json(session, sys.argv[2])
-
-    elif sys.argv[1] == 'scrape':
-        get_submissions(session)
-
-    elif sys.argv[1] == 'drop':
-        Base.metadata.drop_all(bind=engine)
-        Base.metadata.create_all(engine)
-    else:
-        cli_help()
-
-
-if __name__ == '__main__':
-    main()
-
+def reset_db():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(engine)
