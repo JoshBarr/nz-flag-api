@@ -59,7 +59,7 @@ http://localhost:3000/api/610
   "designer": "Aku A.",
   "designer_location": "Waikato",
   "id": 4338,
-  "image_path": "http://127.0.0.1:3000/static/submissions/4338.jpg",
+  "image_path": "http://localhost:3000/static/submissions/4338.jpg",
   "last_scraped": "2015-05-16T15:45:03.146103+00:00",
   "suggested_by": null,
   "suggested_by_location": null,
