@@ -53,21 +53,31 @@ http://localhost:3000/api/610
 ## API example
 
 ```json
+
 {
-  "description": "RE :  As a Third submitted Flag ( No 3 ), The Silver fern ( Name ), Based on The Ratio 2 : 1 for Flag Dimension                                                               \r\nhtml  Colours  /  # 130B7B    [ Blue ]      &     # 8000000     [Maroon ]  \r\nPlease Note : The Fern Frond May Be subject to Copyright as stated on the website http://www.personalisedswitchcovers.com  \r\nThe Flag Design submitted is inspired by Kyle Lockwood`s Flag Design.\r\nI believe this structure of a Flag is impartial and un-biased, and carries credibility for NZ.",
-  "designer": "JNG HETHERINGTON",
-  "designer_location": "Bay of Plenty",
-  "id": 4063,
-  "image_path": "/static//static/submissions/4063.jpg",
-  "last_scraped": "2015-05-16T15:31:44.394399+00:00",
+  "description": "Bird accualy is kiwi. Is well known icon of our country and people. Also stars are southern cross and blue is pacific ocean. Where we're from and how we got here.",
+  "designer": "Aku A.",
+  "designer_location": "Waikato",
+  "id": 4338,
+  "image_path": "http://127.0.0.1:3000/static/submissions/4338.jpg",
+  "last_scraped": "2015-05-16T15:45:03.146103+00:00",
   "suggested_by": null,
   "suggested_by_location": null,
-  "tags": " black,blue,red,white,fern,Southern Cross.",
-  "title": "The Silver Fern",
-  "url": "https://www.govt.nz/browse/engaging-with-government/the-nz-flag-your-chance-to-decide/gallery/design/4063"
+  "tags": [
+    "blue",
+    "red",
+    "white",
+    "kiwi",
+    "Southern Cross",
+    "history",
+    "Kiwiana",
+    "Ocean",
+    "brown"
+  ],
+  "title": "Southern Kiwi",
+  "url": "https://www.govt.nz/browse/engaging-with-government/the-nz-flag-your-chance-to-decide/gallery/design/4338"
 }
 ```
-
 
 
 ## Command reference
@@ -82,7 +92,6 @@ npm run cron        # scheduled task to scrape the govt site every hour
 ```
 
 
-
 ## Deployment
 
 * Set up a uWSGI script to run the Flask app with nginx
@@ -95,5 +104,6 @@ npm run cron
 ## Todo:
 * Write better docs
 * Host it somewhere
+* Move the static assets to a CDN
 
 
