@@ -5,7 +5,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No tests, but maybe one day!\" && exit 0",
     "scrape": "python ./scrape.py scrape",
     "start": "python ./app.py",
     "dump": "python ./scrape.py dump > var/submissions.json",
