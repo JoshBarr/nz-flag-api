@@ -2,7 +2,7 @@ import datetime
 import arrow
 import sqlalchemy as sql
 
-from flask import Flask, request, url_for
+from flask import Flask, request, url_for, render_template, abort, redirect
 from sqlalchemy.orm import sessionmaker, scoped_session
 from flask.ext.jsontools import JsonSerializableBase, DynamicJSONEncoder, jsonapi
 
@@ -34,7 +34,21 @@ def get_all_submissions():
 @jsonapi
 def get_submission(id):
     item = session.query(Submission).filter_by(id=id).first()
+    if not item:
+        abort(404)
     return prepare(item)
+
+@app.errorhandler(404)
+@jsonapi
+def page_not_found(e):
+    return {
+        'code': 404,
+        'message': 'Page not found'
+    }
+
+@app.route('/', methods=['GET'])
+def index():
+    return redirect(url_for('get_all_submissions'))
 
 
 if __name__ == '__main__':
