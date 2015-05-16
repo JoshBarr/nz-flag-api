@@ -12,7 +12,8 @@
     "migrate": "python ./scrape.py migrate var/submissions.json",
     "drop": "python ./scrape.py drop",
     "cron": "node cron.js",
-    "postinstall": "pip install -r requirements.txt"
+    "postinstall": "pip install -r requirements.txt",
+    "quickstart": "npm run scrape & npm start"
   },
   "author": "",
   "license": "MIT",

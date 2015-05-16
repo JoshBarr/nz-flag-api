@@ -15,14 +15,7 @@ import os
 import arrow
 
 from models import session, engine, Submission, Base, ApiJSONEncoder
-
-BASE_URL = 'https://www.govt.nz'
-BASE_PATH = '/browse/engaging-with-government/the-nz-flag-your-chance-to-decide/\
-gallery/'
-
-STATIC_PATH = 'static'
-IMAGE_PATH = 'submissions';
-
+from config import BASE_URL, BASE_PATH, STATIC_PATH, IMAGE_PATH
 
 
 def get_submissions_per_page(soup):
@@ -179,8 +172,6 @@ def migrate_from_json(session, path):
 
     session.commit()
     print "%d submissions merged" % session.query(Submission).count()
-
-
 
 
 def save_image(id, img):
