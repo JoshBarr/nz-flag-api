@@ -26,7 +26,21 @@ All the lifecycle commands are in the `package.json`
 npm install
 ```
 
-## Running commands
+## Running the app
+
+First, you'll need to populate the DB. The scraper has to traverse every
+submission on the first run. At the time of writing, there's about 850 of them,
+so it takes a while.
+
+Subsequent scrapes are much faster, since it traverses the listing pages first,
+to harvest new submissions.
+
+```shell
+npm run scrape
+npm start
+```
+
+## Command reference
 
 ```shell
 npm start           # runs the dev server on port 3000 (change it in config.py)
