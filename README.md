@@ -1,22 +1,51 @@
 # NZ Flag Consideration Project API
 
-This isn't an API quite yet. But it will be. Right now, it sucks the submission
-metadata down into a SQLite DB. It also allows you to cache the scraped data in a
-JSON file so you don't have to hit the server while developing the tool
+Lots of people have been asking for a way to get the NZ Govt Flags out of the
+govt.nz site in a machine parsable format.
+
+This is an extension of @fogonwater's
+[getflags](https://github.com/fogonwater/getflags) tool. It uses BeautifulSoup
+to get the images and metadata of the flag submissions, and store them in a
+SQLite DB.
+
+It then serves them up over a JSON API via a tiny Flask application.
+
 
 ## Todo:
-* Create methods for scraping individual submissions to get the image/description
-* Implement an HTTP endpoint for querying the db from your web service
-* Schedule the scraper to run every so often
-* Make migration non-destructive (it's a drop_all and reload right now)
-* Write docs
+* Write better docs
 * Host it somewhere
 
+## Requirements
 
-## Getting started
+Assumes you have:
+* python
+* setuptools/pip
+* nodejs
+
+All the lifecycle commands are in the `package.json`
+
+## Installation
 
 ```shell
-pip install -r requirements.txt
-python ./scrape.py fetch
+npm install
 ```
-The fetch command is also aliased to `npm start` if you use node-based tooling.
+
+## Running commands
+
+```shell
+npm start           # runs the dev server on port 3000 (change it in config.py)
+npm run scrape      # scrapes the govt.nz site for flags
+npm run dump        # dumps the results out as JSON `var/submissions.json`
+npm run migrate     # populate the DB from JSON file `var/submissions.json`
+npm run drop        # drops the table
+npm run cron        # scheduled task to scrape the govt site every hour
+```
+
+## Deployment
+
+* Set up a uWSGI script to run the Flask app with nginx
+* Run the cron task to populate the DB and scrape the live site for new submissions every hour
+
+```
+npm run cron
+```
