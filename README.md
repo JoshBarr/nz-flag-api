@@ -5,6 +5,8 @@
 Lots of people have been asking for a way to get the NZ Govt Flags out of the
 govt.nz site in a machine parsable format.
 
+[See it in action](http://flag.joshbarr.com/api/)
+
 This is an extension of @fogonwater's
 [getflags](https://github.com/fogonwater/getflags) tool. It uses BeautifulSoup
 to get the images and metadata of the flag submissions, and store them in a
@@ -38,18 +40,19 @@ Subsequent scrapes are much faster, since it traverses the listing pages first,
 to harvest new submissions.
 
 ```shell
-npm run quickstart
+python scraper scrape     # This will take a while
+python api                # API on port 5000 for you
 ```
 
 You can then get all the flag submissions by visiting the API in your browser
 ```
-http://localhost:3000/api/
+http://localhost:5000/api/
 ```
 
 You can also get individual submissions by passing an ID:
 
 ```
-http://localhost:3000/api/610
+http://localhost:5000/api/610
 ```
 
 ## API example
@@ -84,13 +87,20 @@ http://localhost:3000/api/610
 ## Images
 
 Image of flag submissions are saved via `urllib` to the `static/submissions`
-directory. You should configure your wSGI app to serve these directly.
+directory. You should configure your wsgi app to serve these directly.
 
 
 ## Command reference
 
+```
+python api                  # runs the Flask API app on port 5000
+python scraper scrape       # scrapes the govt.nz site for flags
+python scraper              # List all available commands
+```
+
+### package.json
 ```shell
-npm start           # runs the dev server on port 3000 (change it in config.py)
+npm start           # runs the dev server on port 5000
 npm run scrape      # scrapes the govt.nz site for flags
 npm run dump        # dumps the results out as JSON `var/submissions.json`
 npm run migrate     # populate the DB from JSON file `var/submissions.json`
@@ -101,8 +111,27 @@ npm run cron        # scheduled task to scrape the govt site every hour
 
 ## Deployment
 
-* Set up a uWSGI script to run the Flask app with nginx
-* Run the cron task to populate the DB and scrape the live site for new submissions every hour
+### Set up a wsgi script to run the Flask app
+
+Example wsgi script:
+```python
+import sys
+import os
+sys.path.insert(1, os.path.join(sys.path[0], '.'))
+
+from api.app import app as application
+
+```
+
+### Env config
+
+drop an `env.py` in the root of your project to override any configuration
+options from `config.py`.
+
+### Run the node cron task
+
+To make sure you've got the freshest, juiciest flags, run this task to scrape
+the site every couple of hours.
 
 ```
 npm run cron
@@ -110,7 +139,7 @@ npm run cron
 
 ## Todo:
 * Write better docs
-* Host it somewhere
+* Add some caching
 * Move the static assets to a CDN
 
 

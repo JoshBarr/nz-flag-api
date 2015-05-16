@@ -7,7 +7,7 @@ function scrapeGovtNZSite() {
     var child = spawn('python', ['scraper', 'scrape'], {stdio: "inherit"});
 }
 
-var j = schedule.scheduleJob('* 1 * * *', function(){
+var j = schedule.scheduleJob('* 2 * * *', function(){
     scrapeGovtNZSite()
 });
 

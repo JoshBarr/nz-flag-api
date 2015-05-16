@@ -6,3 +6,4 @@ BASE_PATH = '/browse/engaging-with-government/the-nz-flag-your-chance-to-decide/
 STATIC_PATH = 'static'
 IMAGE_PATH = 'submissions';
 DATABASE = 'sqlite:///var/submissions.sqlite'
+DATABASE_PATH = 'var'
