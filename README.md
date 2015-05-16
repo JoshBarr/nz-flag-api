@@ -79,6 +79,11 @@ http://localhost:3000/api/610
 }
 ```
 
+## Images
+
+Image of flag submissions are saved via `urllib` to the `static/submissions`
+directory. You should configure your wSGI app to serve these directly.
+
 
 ## Command reference
 
