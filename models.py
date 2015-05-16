@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 
 Base = declarative_base(cls=(JsonSerializableBase,))
 
-engine = sql.create_engine('sqlite:///var/submissions-test.sqlite', echo=False)
+engine = sql.create_engine('sqlite:///var/submissions.sqlite', echo=False)
 session = scoped_session(sessionmaker(bind=engine,
                         autocommit=False,
                         autoflush=False))
