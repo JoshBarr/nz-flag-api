@@ -18,6 +18,7 @@ app.config.from_object('config')
 # Get the URL for the static assets
 def prepare(model):
     model.image_path = "/static/" + model.image_path
+    model.tags = model.tags.split(',')
     data = model.__json__()
     return data
 

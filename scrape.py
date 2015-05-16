@@ -112,7 +112,8 @@ def get_submissions(session):
             tag_match = re.search('tagged with:\s+(.*)$', image_node['alt'])
 
             if tag_match:
-                tag_text = tag_match.group(0).replace("tagged with:", "")
+                # Clean up the tagged with and remove the fullstop on the end
+                tag_text = tag_match.group(0).replace("tagged with: ", "")[:-1]
                 tag_arr = tag_text.split(", ")
 
             print  "Scraped #%s\t%s\t%s" % (submission_id, designer.encode('utf-8'), title.encode('utf-8'))
