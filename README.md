@@ -5,7 +5,7 @@
 Lots of people have been asking for a way to get the NZ Govt Flags out of the
 govt.nz site in a machine parsable format.
 
-## [See it in action](http://flag.joshbarr.com/api/)
+### [See it in action](http://flag.joshbarr.com/api/)
 
 This is an extension of @fogonwater's
 [getflags](https://github.com/fogonwater/getflags) tool. It uses BeautifulSoup
