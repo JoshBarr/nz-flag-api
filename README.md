@@ -55,6 +55,14 @@ You can also get individual submissions by passing an ID:
 http://localhost:5000/api/610
 ```
 
+Or search (it's just using `LIKE`) by tags and descriptions:
+
+```
+/api/tag/<string:name>
+/api/description/<string:name>
+```
+
+
 ## API example
 
 ```json

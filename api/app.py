@@ -63,9 +63,8 @@ def prepare(model):
 @app.route('/api/', methods=['GET'])
 @jsonapi
 def get_all_submissions():
-    items = session.query(Submission).all()
-    json_models = [prepare(item) for item in items]
-    return json_models
+    items = session.query(Submission).order_by(Submission.id.desc()).all()
+    return [prepare(item) for item in items]
 
 
 @app.route('/api/<int:id>', methods=['GET'])
@@ -75,6 +74,31 @@ def get_submission(id):
     if not item:
         abort(404)
     return prepare(item)
+
+
+@app.route('/api/tag/<string:name>', methods=['GET'])
+@jsonapi
+def get_by_tag(name):
+    """
+    This would probably benefit from being refactored as a many-to-many
+    relationship instead of a comma separated string
+    """
+    items = session.query(Submission).filter(Submission.tags.like('%' + name + '%')).order_by(Submission.id.desc()).all()
+    if not items:
+        abort(404)
+
+    return [prepare(item) for item in items]
+
+
+@app.route('/api/description/<string:name>', methods=['GET'])
+@jsonapi
+def get_by_desc(name):
+    items = session.query(Submission).filter(Submission.description.like('%' + name + '%')).order_by(Submission.id.desc()).all()
+    if not items:
+        abort(404)
+
+    return [prepare(item) for item in items]
+
 
 @app.errorhandler(404)
 @jsonapi
