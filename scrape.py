@@ -116,7 +116,7 @@ def get_submissions(session):
                 tag_text = tag_match.group(0).replace("tagged with: ", "")[:-1]
                 tag_arr = tag_text.split(", ")
 
-            print  "Scraped #%s\t%s\t%s" % (submission_id, designer.encode('utf-8'), title.encode('utf-8'))
+            print  "Scraped #%s" % (submission_id)
 
             instance = Submission(
                 id=int(submission_id),
