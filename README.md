@@ -11,10 +11,6 @@ SQLite DB.
 It then serves them up over a JSON API via a tiny Flask application.
 
 
-## Todo:
-* Write better docs
-* Host it somewhere
-
 ## Requirements
 
 Assumes you have:
@@ -49,3 +45,9 @@ npm run cron        # scheduled task to scrape the govt site every hour
 ```
 npm run cron
 ```
+
+## Todo:
+* Write better docs
+* Host it somewhere
+
+
