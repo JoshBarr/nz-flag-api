@@ -21,13 +21,23 @@ Assumes you have:
 * python
 * setuptools/pip
 * nodejs
+* memcached (default is a `memcached.sock` in your home directory)
 
-All the lifecycle commands are in the `package.json`
 
 ## Installation
 
 ```shell
 npm install
+```
+
+Note that the `npm` tasks are aliased to the generic version of `python` in your
+shell, for convenience. If you want to run it using `python2.7` for instance,
+you're better off running the raw python commands:
+
+```shell
+easy_install-2.7 install
+python2.7 scraper scrape
+python2.7 api
 ```
 
 ## Running the app
@@ -135,6 +145,12 @@ from api.app import app as application
 
 drop an `env.py` in the root of your project to override any configuration
 options from `config.py`.
+
+
+### Caching
+
+The app stores the listing and the individual flag items using `memcached`.
+The default cache time is 60 minutes.
 
 ### Run the node cron task
 
