@@ -6,18 +6,18 @@ from bs4 import BeautifulSoup
 import urllib
 import urllib2
 import re
-import time
 import datetime
 import json
-import sqlalchemy as sql
 import sys
 import os
 import arrow
 
-# Add the parent dir to the path, which is I think what Flask is doing anyway
+# Add the parent dir to the path, which is I think what Flask does.
+# I'm no python expert but this feels hackish.. is there a better way?
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from api.app import session, engine, Submission, Base, ApiJSONEncoder
 from config import BASE_URL, BASE_PATH, STATIC_PATH, IMAGE_PATH
+
 
 def get_submissions_per_page(soup):
     submissions = soup.findAll('div', {'class': 'flag'})
@@ -86,7 +86,7 @@ def build_urls(submissions_per_page, max_offset):
 def get_submissions():
     submissions_per_page, max_offset, total = get_search_criteria_from_index_page()
     urls = build_urls(submissions_per_page, max_offset)
-    scrape_start_time = datetime.datetime.now()
+    # scrape_start_time = datetime.datetime.now()
 
     for url in urls:
         soup = get_url_as_soup(url)
@@ -117,7 +117,7 @@ def get_submissions():
                 tag_text = tag_match.group(0).replace("tagged with: ", "")[:-1]
                 tag_arr = tag_text.split(", ")
 
-            print  "Scraped #%s" % (submission_id)
+            print "Scraped #%s" % (submission_id)
 
             instance = Submission(
                 id=int(submission_id),
@@ -135,7 +135,7 @@ def get_submissions():
             session.merge(instance)
             session.commit()
 
-    scrape_end_time = datetime.datetime.now()
+    # scrape_end_time = datetime.datetime.now()
 
 
 def get_extended_metadata(item):
@@ -159,7 +159,8 @@ def get_extended_metadata(item):
 def dump_to_json():
     items = session.query(Submission).all()
     json_models = [x.__json__() for x in items]
-    print json.dumps(json_models, indent=4, sort_keys=True, separators=(',', ': '), cls=ApiJSONEncoder, ensure_ascii=False).encode('utf-8')
+    print json.dumps(json_models, indent=4, sort_keys=True, separators=(',', ': '),
+                     cls=ApiJSONEncoder, ensure_ascii=False).encode('utf-8')
 
 
 def migrate_from_json(path):

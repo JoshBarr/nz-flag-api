@@ -1,11 +1,13 @@
 from sqlalchemy.ext.declarative import declarative_base
+from flask.ext.jsontools import JsonSerializableBase
 from sqlalchemy import Column, Integer, String, DateTime
-from flask.ext.jsontools import JsonSerializableBase, DynamicJSONEncoder
-import sqlalchemy as sql
+from flask.ext.jsontools import DynamicJSONEncoder
 import arrow
 import datetime
 
-import app as application
+
+Base = declarative_base(cls=(JsonSerializableBase,))
+
 
 class ApiJSONEncoder(DynamicJSONEncoder):
     def default(self, o):
@@ -20,7 +22,7 @@ class ApiJSONEncoder(DynamicJSONEncoder):
         return super(DynamicJSONEncoder, self).default(o)
 
 
-class Submission(application.Base):
+class Submission(Base):
     __tablename__ = 'submissions'
     id = Column(Integer, primary_key=True)
     title = Column(String)
@@ -36,6 +38,4 @@ class Submission(application.Base):
 
     def __repr__(self):
         return "<Submission(id='%s', designer='%s', title='%s')>" % (
-                            self.id, self.designer.encode('utf-8'), self.title.encode('utf-8'))
-
-
+               self.id, self.designer.encode('utf-8'), self.title.encode('utf-8'))

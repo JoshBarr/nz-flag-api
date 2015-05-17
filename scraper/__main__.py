@@ -2,6 +2,7 @@ import scraper
 import sys
 import os
 
+
 def cli_help():
     print "CLI options:"
     print "\scrape\t\tScrape the live site and generate a DB"
@@ -9,6 +10,7 @@ def cli_help():
     print "\tdump > [PATH] \t\tDumps the DB as JSON to stout. Redirect it to your file."
     print "\tdrop\t\tDrops the database tables and rebuilds them"
     exit()
+
 
 if __name__ == '__main__':
 

@@ -1,19 +1,11 @@
-import datetime
-import arrow
 import sqlalchemy as sql
 import os
-
-from flask import Flask, request, url_for, render_template, abort, redirect
+from flask import Flask, request, url_for, abort, redirect
 from sqlalchemy.orm import sessionmaker, scoped_session
-from flask.ext.jsontools import JsonSerializableBase, DynamicJSONEncoder, jsonapi
+from flask.ext.jsontools import jsonapi
+from models import Base, Submission, ApiJSONEncoder
+from werkzeug.contrib.cache import MemcachedCache
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime
-from flask.ext.jsontools import JsonSerializableBase, DynamicJSONEncoder
-import sqlalchemy as sql
-
-
-from urlparse import urlparse
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -24,13 +16,7 @@ env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'env.py
 if os.path.exists(env_path):
     app.config.from_object('env')
 
-
-from sqlalchemy.orm import sessionmaker, scoped_session
-
-Base = declarative_base(cls=(JsonSerializableBase,))
-
-# This is dirty. Ensuring some directories exist because who reads the manual?
-# SQLITE
+# This is dirty. Ensuring some directories exist, because who reads the manual?
 db_path = app.config["DATABASE_PATH"]
 if db_path:
     if not os.path.exists(db_path):
@@ -44,13 +30,14 @@ if static_path:
 
 engine = sql.create_engine(app.config['DATABASE'], echo=False)
 session = scoped_session(sessionmaker(bind=engine,
-                        autocommit=False,
-                        autoflush=False))
+                         autocommit=False,
+                         autoflush=False))
 
-from models import Submission, ApiJSONEncoder
 
 app.json_encoder = ApiJSONEncoder
 Base.metadata.create_all(engine)
+
+cache = MemcachedCache([app.config['CACHE_BACKEND']])
 
 
 # Get the URL for the static assets
@@ -60,19 +47,32 @@ def prepare(model):
     data['tags'] = model.tags.split(',')
     return data
 
+
 @app.route('/api/', methods=['GET'])
 @jsonapi
 def get_all_submissions():
-    items = session.query(Submission).order_by(Submission.id.desc()).all()
+    items = cache.get('get_all_submissions')
+    print cache
+
+    if items is None:
+        print "not from cache"
+        items = session.query(Submission).order_by(Submission.id.desc()).all()
+        cache.set('get_all_submissions', items, timeout=app.config['CACHE_TIME'])
     return [prepare(item) for item in items]
 
 
 @app.route('/api/<int:id>', methods=['GET'])
 @jsonapi
 def get_submission(id):
-    item = session.query(Submission).filter_by(id=id).first()
+    item = cache.get('get_submission_' + id)
+
+    if item is None:
+        item = session.query(Submission).filter_by(id=id).first()
+        cache.set('get_submission_' + id, item, timeout=app.config['CACHE_TIME'])
+
     if not item:
         abort(404)
+
     return prepare(item)
 
 
@@ -83,7 +83,9 @@ def get_by_tag(name):
     This would probably benefit from being refactored as a many-to-many
     relationship instead of a comma separated string
     """
-    items = session.query(Submission).filter(Submission.tags.like('%' + name + '%')).order_by(Submission.id.desc()).all()
+    items = session.query(Submission)\
+                   .filter(Submission.tags.like('%' + name + '%'))\
+                   .order_by(Submission.id.desc()).all()
     if not items:
         abort(404)
 
@@ -93,7 +95,9 @@ def get_by_tag(name):
 @app.route('/api/description/<string:name>', methods=['GET'])
 @jsonapi
 def get_by_desc(name):
-    items = session.query(Submission).filter(Submission.description.like('%' + name + '%')).order_by(Submission.id.desc()).all()
+    items = session.query(Submission)\
+                   .filter(Submission.description.like('%' + name + '%'))\
+                   .order_by(Submission.id.desc()).all()
     if not items:
         abort(404)
 
@@ -108,11 +112,7 @@ def page_not_found(e):
         'message': 'Page not found'
     }
 
+
 @app.route('/', methods=['GET'])
 def index():
     return redirect(url_for('get_all_submissions'))
-
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
-
