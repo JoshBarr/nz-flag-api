@@ -52,23 +52,23 @@ def prepare(model):
 @jsonapi
 def get_all_submissions():
     items = cache.get('get_all_submissions')
-    print cache
 
     if items is None:
         print "not from cache"
         items = session.query(Submission).order_by(Submission.id.desc()).all()
         cache.set('get_all_submissions', items, timeout=app.config['CACHE_TIME'])
+
     return [prepare(item) for item in items]
 
 
 @app.route('/api/<int:id>', methods=['GET'])
 @jsonapi
 def get_submission(id):
-    item = cache.get('get_submission_' + id)
+    item = cache.get('get_submission_%d' % id)
 
     if item is None:
         item = session.query(Submission).filter_by(id=id).first()
-        cache.set('get_submission_' + id, item, timeout=app.config['CACHE_TIME'])
+        cache.set('get_submission_%d' % id, item, timeout=app.config['CACHE_TIME'])
 
     if not item:
         abort(404)
