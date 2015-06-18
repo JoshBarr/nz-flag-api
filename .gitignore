@@ -1,0 +1,7 @@
+*.pyc
+.DS_Store
+npm-debug.log
+node_modules
+static/submissions/*
+var/*
+env.py

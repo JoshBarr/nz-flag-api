@@ -1,0 +1,23 @@
+{
+  "name": "flag-api",
+  "version": "1.0.0",
+  "repository": "https://github.com/JoshBarr/nz-flag-api",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"No tests, but maybe one day!\" && exit 0",
+    "scrape": "python scraper scrape",
+    "start": "python api",
+    "dump": "python scraper dump > var/submissions.json",
+    "migrate": "python scraper migrate var/submissions.json",
+    "drop": "python scraper drop",
+    "cron": "node cron.js",
+    "postinstall": "pip install -r requirements.txt",
+    "quickstart": "npm run scrape & npm start"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-schedule": "^0.2.6"
+  }
+}
